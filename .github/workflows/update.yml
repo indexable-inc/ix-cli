@@ -21,24 +21,25 @@ jobs:
 
       - uses: DeterminateSystems/nix-installer-action@main
 
-      - name: Re-pin to latest ix.dev binaries
+      - name: Re-pin to latest ix.dev release
         run: ./update.sh
 
       - name: Stop if nothing changed
         id: diff
         run: |
-          if git diff --quiet -- flake.nix; then
+          if git diff --quiet -- flake.nix cli-manifest.json; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "Already current; nothing to do."
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
-            git --no-pager diff -- flake.nix
+            git --no-pager diff -- flake.nix cli-manifest.json
           fi
 
-      # Gate the bump on an actual build: this fetches the Linux binary and
-      # fails if the freshly-pinned hash does not match. The darwin hash is
-      # content-addressed by `nix store prefetch-file` in update.sh, so it is
-      # correct by construction even though it can't be built on a Linux runner.
+      # Gate the bump on an actual build: this fetches the Linux binary from its
+      # content-addressed URL and fails if the pinned digest does not match. The
+      # darwin pin is the same kind of content-addressed digest (URL path ==
+      # sha256), correct by construction even though it can't build on a Linux
+      # runner.
       - name: Verify the new pin actually builds
         if: steps.diff.outputs.changed == 'true'
         run: nix build .#ix --no-link --print-out-paths
