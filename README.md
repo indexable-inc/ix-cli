@@ -1,4 +1,4 @@
-# ix-flake
+# ix-cli
 
 Nix flake that packages the [Ix CLI](https://github.com/ix-infrastructure/Ix) -
 "system intelligence for codebases" - from its official prebuilt GitHub releases,
@@ -24,20 +24,20 @@ not offered here.
 Run without installing:
 
 ```sh
-nix run github:indexable-inc/ix-flake -- --help
+nix run github:indexable-inc/ix-cli -- --help
 ```
 
 Install into your profile:
 
 ```sh
-nix profile install github:indexable-inc/ix-flake
+nix profile install github:indexable-inc/ix-cli
 ```
 
 As a flake input:
 
 ```nix
 {
-  inputs.ix.url = "github:indexable-inc/ix-flake";
+  inputs.ix.url = "github:indexable-inc/ix-cli";
   # then use: ix.packages.${system}.default
 }
 ```
