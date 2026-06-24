@@ -17,7 +17,7 @@
         version = "0-unstable-2026-06-24"; # ix.dev build ffdc10e4df
         hashes = {
           "aarch64-darwin" = "sha256-WtpM4MQUMGT63KxqTeh5CUN0oSfw/qaUs53u8GKiWEw=";
-          "x86_64-linux"   = "sha256-QyS5aEJ6ldxpY+AvESWXRLb8mhY/0/jpNXaq4+L9UcQ=";
+          "x86_64-linux"   = "sha256-t3B3eRQMh/U3BeoJVr6Qcj67GyczxZdsg/9ejQ/Mt98=";
         };
         # --- end managed block ---
 
