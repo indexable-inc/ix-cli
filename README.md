@@ -1,10 +1,10 @@
 # ix-cli
 
-Nix flake for the **ix CLI** - "run anything, anywhere": boot and manage ix VMs.
-
-This packages the official `ix` binary published at [ix.dev](https://ix.dev) so you
+This is the official `ix-cli` binary published at [ix.dev](https://ix.dev) so you
 can install it with Nix instead of the `curl https://ix.dev/install.sh | sh`
-installer. The binary is self-contained (static-pie on Linux), so the flake just
+installer. 
+
+The binary is self-contained (static-pie on Linux), so the flake just
 fetches it and puts `ix` on your `PATH`.
 
 ## Supported platforms
@@ -46,13 +46,11 @@ As a flake input:
 End users upgrade with `nix profile upgrade ix` or `nix flake update`.
 
 `ix.dev/cli/<platform>/ix` is an unversioned "latest" URL, so this flake pins the
-binary by content hash. A daily GitHub Action runs [`update.sh`](./update.sh),
-which re-fetches the binaries, and - if they changed - re-pins the hashes, refreshes
-the version label from `ix --version`, and opens a PR. Run it manually with:
+binary by content hash. 
 
-```sh
-./update.sh
-```
+A daily GitHub Action runs [`update.sh`](./update.sh),
+which re-fetches the binaries, and - if they changed - re-pins the hashes, refreshes
+the version label from `ix --version`, and opens a PR. 
 
 ## See also
 
