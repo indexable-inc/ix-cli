@@ -15,10 +15,13 @@
 
         # --- managed by update.sh / CI ---
         version = "0-unstable-2026-06-24"; # ix.dev build 4fbd002d1f
-        hashes = {
-          "aarch64-darwin" = "sha256-/4y70apCK0qE1I96e2LTle9CUhvA2E2p8eOsRq3RkYg=";
-          "x86_64-linux"   = "sha256-WwCfqjoJccxzesvSlVjMEJq5bxGIVitzfVSjFjJPf3s=";
-        };
+        # platform -> sha256 content digest of the published `ix` binary.
+        # Generated from https://ix.dev/cli/manifest.json. Each digest is BOTH
+        # the path segment of the immutable channel URL below AND the binary's
+        # own sha256, so the fetch can never hash-mismatch: a republish lands at
+        # a new digest/URL and never mutates an existing one, and any pinned rev
+        # of this flake stays reproducible forever.
+        manifest = builtins.fromJSON (builtins.readFile ./cli-manifest.json);
         # --- end managed block ---
 
         plat = {
@@ -26,16 +29,21 @@
           "x86_64-linux"   = "linux-x86_64";
         }.${system};
 
+        digest = manifest.${plat};
+
         ix = pkgs.stdenv.mkDerivation {
           pname = "ix";
           inherit version;
 
-          # The official ix.dev installer downloads this exact binary.
-          # It is a self-contained executable (static-pie on Linux), so no
-          # patchelf / wrapping is needed.
+          # The official ix.dev installer downloads the same binary from the
+          # mutable cli/<platform>/ix key; we fetch the content-addressed copy
+          # cli/<platform>/sha256/<digest>/ix instead. It is a self-contained
+          # executable (static-pie on Linux), so no patchelf / wrapping needed.
           src = pkgs.fetchurl {
-            url = "https://ix.dev/cli/${plat}/ix";
-            hash = hashes.${system};
+            url = "https://ix.dev/cli/${plat}/sha256/${digest}/ix";
+            # The digest in the URL is the file's sha256, so URL and hash always
+            # agree by construction -- no mutable-URL race, no stale pin.
+            sha256 = digest;
           };
 
           dontUnpack = true;
@@ -51,7 +59,7 @@
             description = "ix CLI - run anything, anywhere (boot and manage ix VMs)";
             homepage = "https://ix.dev";
             mainProgram = "ix";
-            platforms = builtins.attrNames hashes;
+            platforms = [ "aarch64-darwin" "x86_64-linux" ];
             sourceProvenance = [ sourceTypes.binaryNativeCode ];
             # License unset: binary redistributed verbatim from ix.dev.
           };
