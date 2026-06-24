@@ -1,23 +1,21 @@
 # ix-cli
 
-Nix flake that packages the [Ix CLI](https://github.com/ix-infrastructure/Ix) -
-"system intelligence for codebases" - from its official prebuilt GitHub releases,
-so you can install it with Nix instead of the `curl | sh` installer.
+Nix flake for the **ix CLI** - "run anything, anywhere": boot and manage ix VMs.
 
-This repackages upstream's signed release tarballs verbatim (Apache-2.0). The CLI
-is a self-contained Node app; this flake just wraps its launcher with `node`,
-`git`, and `ripgrep` on `PATH`.
+This packages the official `ix` binary published at [ix.dev](https://ix.dev) so you
+can install it with Nix instead of the `curl https://ix.dev/install.sh | sh`
+installer. The binary is self-contained (static-pie on Linux), so the flake just
+fetches it and puts `ix` on your `PATH`.
 
 ## Supported platforms
 
-| Nix system       | Upstream asset    |
-| ---------------- | ----------------- |
-| `aarch64-darwin` | `darwin-arm64`    |
-| `x86_64-linux`   | `linux-amd64`     |
-| `aarch64-linux`  | `linux-arm64`     |
+| Nix system       | ix.dev binary   |
+| ---------------- | --------------- |
+| `aarch64-darwin` | `darwin-arm64`  |
+| `x86_64-linux`   | `linux-x86_64`  |
 
-Intel macOS (`x86_64-darwin`) and Windows are not published upstream, so they are
-not offered here.
+`linux-arm64` is not yet published upstream, and Intel macOS is unsupported - so
+neither is offered here.
 
 ## Usage
 
@@ -25,6 +23,7 @@ Run without installing:
 
 ```sh
 nix run github:indexable-inc/ix-cli -- --help
+nix run github:indexable-inc/ix-cli -- ls
 ```
 
 Install into your profile:
@@ -38,7 +37,7 @@ As a flake input:
 ```nix
 {
   inputs.ix.url = "github:indexable-inc/ix-cli";
-  # then use: ix.packages.${system}.default
+  # then use: ix.packages.${system}.default  (or ix.apps.${system}.default)
 }
 ```
 
@@ -46,15 +45,15 @@ As a flake input:
 
 End users upgrade with `nix profile upgrade ix` or `nix flake update`.
 
-This repo tracks new Ix releases automatically: a daily GitHub Action runs
-[`update.sh`](./update.sh), which reads the latest release tag, pulls the per
--platform `.sha256` sidecars, converts them to SRI, rewrites `flake.nix`, and
-opens a PR. Run it manually with:
+`ix.dev/cli/<platform>/ix` is an unversioned "latest" URL, so this flake pins the
+binary by content hash. A daily GitHub Action runs [`update.sh`](./update.sh),
+which re-fetches the binaries, and - if they changed - re-pins the hashes, refreshes
+the version label from `ix --version`, and opens a PR. Run it manually with:
 
 ```sh
 ./update.sh
 ```
 
-## Note
+## See also
 
-Unofficial community packaging. Not affiliated with the Ix maintainers.
+- [ix CLI docs](https://github.com/indexable-inc/index/blob/main/doc/ix/cli.md)
