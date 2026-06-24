@@ -14,10 +14,10 @@
         pkgs = import nixpkgs { inherit system; };
 
         # --- managed by update.sh / CI ---
-        version = "0-unstable-2026-06-24"; # ix.dev build f9cf4ed0d0
+        version = "0-unstable-2026-06-24"; # ix.dev build 4fbd002d1f
         hashes = {
-          "aarch64-darwin" = "sha256-Ln1yzSdKz5Soq3gsdehcAjrGHMM2MGFDy1f3S1ptG/Q=";
-          "x86_64-linux"   = "sha256-IrN/VU8/qjEQPzJIyGqofrmk0LZX7gZLKu8tmXunL44=";
+          "aarch64-darwin" = "sha256-/4y70apCK0qE1I96e2LTle9CUhvA2E2p8eOsRq3RkYg=";
+          "x86_64-linux"   = "sha256-WwCfqjoJccxzesvSlVjMEJq5bxGIVitzfVSjFjJPf3s=";
         };
         # --- end managed block ---
 
