@@ -1,0 +1,28 @@
+name: update-ix
+
+on:
+  schedule:
+    - cron: "0 6 * * *"   # daily 06:00 UTC
+  workflow_dispatch: {}    # manual trigger button
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - name: Bump to latest Ix release
+        run: ./update.sh
+      - name: Verify it still evaluates
+        run: nix flake check --no-build || nix build .#ix --dry-run
+      - name: Open PR if changed
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "ix: update to latest release"
+          title: "ix: automated release update"
+          body: "Automated bump of version + SRI hashes from the latest GitHub release."
+          branch: automated/ix-update
