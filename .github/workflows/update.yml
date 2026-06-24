@@ -2,27 +2,51 @@ name: update-ix
 
 on:
   schedule:
-    - cron: "0 6 * * *"   # daily 06:00 UTC
-  workflow_dispatch: {}    # manual trigger button
+    - cron: "5 * * * *"     # hourly at :05 UTC
+  workflow_dispatch: {}      # manual trigger button
+
+# Never let two bumps race on main.
+concurrency:
+  group: update-ix
+  cancel-in-progress: false
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: DeterminateSystems/nix-installer-action@main
-      - name: Bump to latest Ix release
+
+      - name: Re-pin to latest ix.dev binaries
         run: ./update.sh
-      - name: Verify it still evaluates
-        run: nix flake check --no-build || nix build .#ix --dry-run
-      - name: Open PR if changed
-        uses: peter-evans/create-pull-request@v6
-        with:
-          commit-message: "ix: update to latest release"
-          title: "ix: automated release update"
-          body: "Automated bump of version + SRI hashes from the latest GitHub release."
-          branch: automated/ix-update
+
+      - name: Stop if nothing changed
+        id: diff
+        run: |
+          if git diff --quiet -- flake.nix; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Already current; nothing to do."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            git --no-pager diff -- flake.nix
+          fi
+
+      # Gate the bump on an actual build: this fetches the Linux binary and
+      # fails if the freshly-pinned hash does not match. The darwin hash is
+      # content-addressed by `nix store prefetch-file` in update.sh, so it is
+      # correct by construction even though it can't be built on a Linux runner.
+      - name: Verify the new pin actually builds
+        if: steps.diff.outputs.changed == 'true'
+        run: nix build .#ix --no-link --print-out-paths
+
+      - name: Commit and push to main
+        if: steps.diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "ix: auto-bump to latest ix.dev build"
+          git push origin HEAD:main
