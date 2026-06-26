@@ -14,7 +14,7 @@
         pkgs = import nixpkgs { inherit system; };
 
         # --- managed by update.sh / CI ---
-        version = "0-unstable-2026-06-26"; # ix.dev build 87181bca80
+        version = "0-unstable-2026-06-26"; # ix.dev build df0c724b3a
         # platform -> sha256 content digest of the published `ix` binary.
         # Generated from https://ix.dev/cli/manifest.json. Each digest is BOTH
         # the path segment of the immutable channel URL below AND the binary's
