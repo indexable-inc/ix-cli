@@ -39,8 +39,6 @@
           };
           digest = manifest.${plat.${system}};
         in
-        # doCheck is meaningless for a redistributed binary with no test suite.
-        # astlog-ignore: set-docheck
         pkgs.stdenv.mkDerivation {
           pname = "ix";
           inherit version;
@@ -56,12 +54,6 @@
           # executable (static-pie on Linux), so no patchelf / wrapping needed.
           src = pkgs.fetchurl {
             url = "https://ix.dev/cli/${plat.${system}}/sha256/${digest}/ix";
-            # The digest in the URL is the file's sha256, so URL and hash always
-            # agree by construction -- no mutable-URL race, no stale pin. The
-            # manifest stores the bare hex digest because it also has to be the
-            # URL path segment above; an SRI `hash` would be a second, divergent
-            # encoding of the same bytes, so the hex `sha256` slot stays.
-            # astlog-ignore: prefer-sri-hash
             sha256 = digest;
           };
 
@@ -88,12 +80,5 @@
     {
       packages = eachSystem (system:
         let ix = ixFor system; in { default = ix; ix = ix; });
-
-      apps = eachSystem (system: {
-        default = {
-          type = "app";
-          program = lib.getExe self.packages.${system}.default;
-        };
-      });
     };
 }
