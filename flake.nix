@@ -88,12 +88,5 @@
     {
       packages = eachSystem (system:
         let ix = ixFor system; in { default = ix; ix = ix; });
-
-      apps = eachSystem (system: {
-        default = {
-          type = "app";
-          program = lib.getExe self.packages.${system}.default;
-        };
-      });
     };
 }
