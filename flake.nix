@@ -17,7 +17,7 @@
     eachSystem = lib.genAttrs systems;
 
     # --- managed by update.sh / CI ---
-    version = "0-unstable-2026-07-05"; # ix.dev build 334545e88f
+    version = "0-unstable-2026-07-05"; # ix.dev build bb32301ad1
     # platform -> sha256 content digest of the published `ix` binary.
     # Generated from https://ix.dev/cli/manifest.json. Each digest is BOTH
     # the path segment of the immutable channel URL below AND the binary's
