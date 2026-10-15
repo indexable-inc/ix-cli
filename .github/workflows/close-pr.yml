@@ -1,0 +1,23 @@
+name: close-pull-requests
+
+# This repository is generated from a private monorepo; the commits here are
+# the only history. Pull requests cannot be merged, so close them with a pointer.
+on:
+  pull_request_target:
+    types: [opened, reopened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  close:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close with a pointer
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          gh pr close "${PR}" --repo "${REPO}" --comment "Thanks for the change. This repository is a generated mirror of ix's private monorepo, so pull requests cannot be merged here. Please open an issue describing the change; a maintainer ports accepted patches upstream and credits you in the commit."

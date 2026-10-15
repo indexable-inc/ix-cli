@@ -16,16 +16,17 @@
     systems = ["aarch64-darwin" "x86_64-linux"];
     eachSystem = lib.genAttrs systems;
 
-    # --- managed by update.sh / CI ---
-    version = "0-unstable-2026-10-01"; # ix.dev build fe870c45ae
-    # platform -> sha256 content digest of the published `ix` binary.
-    # Generated from https://ix.dev/cli/manifest.json. Each digest is BOTH
-    # the path segment of the immutable channel URL below AND the binary's
-    # own sha256, so the fetch can never hash-mismatch: a republish lands at
-    # a new digest/URL and never mutates an existing one, and any pinned rev
-    # of this flake stays reproducible forever.
+    # cli-manifest.json is the live ix.dev/cli channel manifest, written by the
+    # ix monorepo's publisher (scripts/ci/publish-cli.sh) from the binaries its
+    # Buck2 build produced; do not edit it.
+    # platform -> sha256 content digest of the published `ix` binary. Each
+    # digest is BOTH the path segment of the immutable channel URL below AND
+    # the binary's own sha256, so the fetch can never hash-mismatch: a
+    # republish lands at a new digest/URL and never mutates an existing one,
+    # and any pinned rev of this flake stays reproducible forever.
     manifest = lib.importJSON ./cli-manifest.json;
-    # --- end managed block ---
+    # "2026-10-01T14:18:00Z (fe870c45ae)" -> "0-unstable-2026-10-01"
+    version = "0-unstable-${builtins.substring 0 10 manifest.channel-version}";
 
     plat = {
       "aarch64-darwin" = "darwin-arm64";

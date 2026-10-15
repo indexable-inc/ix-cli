@@ -2,7 +2,7 @@
 
 This is the official `ix-cli` binary published at [ix.dev](https://ix.dev) so you
 can install it with Nix instead of the `curl https://ix.dev/install.sh | sh`
-installer. 
+installer.
 
 The binary is self-contained (static-pie on Linux), so the flake just
 fetches it and puts `ix` on your `PATH`.
@@ -45,13 +45,11 @@ As a flake input:
 
 End users upgrade with `nix profile upgrade ix` or `nix flake update`.
 
-`ix.dev/cli/<platform>/ix` is an unversioned "latest" URL, so this flake pins the
-binary by content hash. 
-
-A daily GitHub Action runs [`update.sh`](./update.sh),
-which re-fetches the binaries, and - if they changed - re-pins the hashes, refreshes
-the version label from `ix --version`, and opens a PR. 
+This repository is a generated mirror of the ix monorepo. Every commit is
+produced by CI from a build of the CLI; `cli-manifest.json` pins each binary by
+its content hash. Pull requests here are closed automatically, so please open
+issues instead.
 
 ## See also
 
-- [ix CLI docs](https://github.com/indexable-inc/index/blob/main/doc/ix/cli.md)
+- [ix CLI docs](https://ix.dev)
