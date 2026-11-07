@@ -1,7 +1,7 @@
 {
-  "channel-version": "2026-11-05T06:33:45Z (d3c1bf3efe)",
-  "darwin-arm64": "0be041e52479f29ecc9aa01d9d7354f39a206ea5d9d3f790ba391cdf4d96de30",
-  "linux-arm64": "75c1d9f6cdd0620399bfde5723b580d2a3b71fa49e682d07d9265cad6ee0a240",
-  "linux-x86_64": "b176a7699d502dba05a3a5b894090dce7abcb023f5459649ca19f23adf93760d",
-  "revision": "d3c1bf3efe02f9a4b6d116418c854d7e53d933f0"
+  "channel-version": "2026-11-07T06:41:22Z (0cd22d9c43)",
+  "darwin-arm64": "a5ea7bf0a5d59f34d445243c5914f035a151dfe6e4c14fb76944bd3f8d3171fa",
+  "linux-arm64": "023d8770d1491b94a67384268e2510a2fa43dd8d042e48cf840bcc692cce1b6f",
+  "linux-x86_64": "6cfd4db0fd61fe1e4291631a950de24ac3da0398b335f19c8b92cec84c6e016c",
+  "revision": "0cd22d9c43baa73ce5c589293914169bcb2cceb5"
 }
